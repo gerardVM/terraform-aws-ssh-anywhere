@@ -29,6 +29,6 @@ resource "aws_security_group_rule" "allow_eice" {
 }
 
 resource "aws_ec2_instance_connect_endpoint" "eice" {
-  subnet_id          = data.aws_instance.target_instance.subnet_id
+  subnet_id          = data.aws_subnet.target_instance.id
   security_group_ids = [ aws_security_group.allow_outgoing_traffic.id ]
 }
