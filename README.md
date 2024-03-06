@@ -6,6 +6,6 @@ This module creates an EC2 Instance Connect endpoint in an AWS account so you ju
 aws --region <your_aws_region> ec2-instance-connect ssh \
 --instance-id <your_instance_id> \
 --os-user ec2-user \
---local-forwarding <local_port>:localhost:<remote_port> \
+--local-forwarding <local_port>:<destination_host_ip>:<destination_host_port> \
 --connection-type eice
 ```

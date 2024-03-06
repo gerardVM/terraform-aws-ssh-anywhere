@@ -11,18 +11,23 @@ resource "aws_security_group" "allow_outgoing_traffic" {
   description = "Allow TLS outbound traffic"
   vpc_id      = data.aws_subnet.target_instance.vpc_id
 
-  egress {
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [ var.instance_security_group_id ]
+  dynamic "egress" {
+    for_each = var.connection_ports
+    content {
+      from_port       = egress.value
+      to_port         = egress.value
+      protocol        = "tcp"
+      security_groups = [ var.instance_security_group_id ]
+    }
   }
 }
 
 resource "aws_security_group_rule" "allow_eice" {
+  for_each = { for port in var.connection_ports : port => port }
+
   type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
+  from_port                = each.value
+  to_port                  = each.value
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.allow_outgoing_traffic.id
   security_group_id        = var.instance_security_group_id
