@@ -1,15 +1,11 @@
-data "aws_instance" "target_instance" {
-  instance_id = var.instance_id
-}
-
-data "aws_subnet" "target_instance" {
-  id = data.aws_instance.target_instance.subnet_id
+data "aws_subnet" "instance_subnet" {
+  id = var.subnet_id
 }
 
 resource "aws_security_group" "allow_outgoing_traffic" {
   name        = "ec2_instance_connect_endpoint_sg"
   description = "Allow TLS outbound traffic"
-  vpc_id      = data.aws_subnet.target_instance.vpc_id
+  vpc_id      = data.aws_subnet.instance_subnet.vpc_id
 
   dynamic "egress" {
     for_each = var.connection_ports
@@ -34,6 +30,6 @@ resource "aws_security_group_rule" "allow_eice" {
 }
 
 resource "aws_ec2_instance_connect_endpoint" "eice" {
-  subnet_id          = data.aws_subnet.target_instance.id
+  subnet_id          = data.aws_subnet.instance_subnet.id
   security_group_ids = [ aws_security_group.allow_outgoing_traffic.id ]
 }

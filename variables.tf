@@ -1,6 +1,6 @@
-variable instance_id {
+variable subnet_id {
     type        = string
-    description = "The instance ID"
+    description = "The subnet ID of the instance"
 }
 
 variable instance_security_group_id {
